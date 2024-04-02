@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -46,7 +45,6 @@
             <input type="text" class="form-control" id="message" onkeydown="sendMessageOnEnter(event)">
         </div>
         <button class="btn btn-primary" onclick="sendMessage()">Send</button>
-        <button class="btn btn-danger" onclick="clearChats()">Clear Chats</button>
 
         <hr>
 
@@ -98,12 +96,6 @@
                 event.preventDefault();
                 sendMessage();
             }
-        }
-
-        // Function to clear all chats
-        function clearChats() {
-            const chatBox = document.getElementById('chatBox');
-            chatBox.innerHTML = ''; // Clear chat box content
         }
 
         // Function to display messages
