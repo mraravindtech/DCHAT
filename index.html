@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DChat</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color:#272929;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .chat-box {
+            height: 300px;
+            overflow-y: scroll;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        .message {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>DChat</h1>
+        <div class="form-group">
+            <label for="username">Your Username:</label>
+            <input type="text" class="form-control" id="username" placeholder="Username">
+        </div>
+        <div class="form-group">
+            <label for="message">Message:</label>
+            <input type="text" class="form-control" id="message" onkeydown="sendMessageOnEnter(event)">
+        </div>
+        <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+        <button class="btn btn-danger" onclick="clearChats()">Clear Chats</button>
+
+        <hr>
+
+        <div class="chat-box" id="chatBox"></div>
+    </div>
+
+    <!-- Include Gun and other necessary libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gun/sea.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gun/lib/webrtc.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gun/lib/axe.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script>
+        const gun = Gun();
+
+        // Load username from localStorage if available
+        const storedUsername = localStorage.getItem('username');
+        if (storedUsername) {
+            document.getElementById('username').value = storedUsername;
+        }
+
+        // Function to send a message
+        function sendMessage() {
+            const username = document.getElementById('username').value;
+            const message = document.getElementById('message').value;
+
+            if (!username || !message) {
+                alert('Please enter your username and message.');
+                return;
+            }
+
+            // Save the username in localStorage
+            localStorage.setItem('username', username);
+
+            // Save the message in the Gun database
+            gun.get('messages').set({ username, message });
+
+            // Clear the message input field
+            document.getElementById('message').value = '';
+        }
+
+        // Function to send a message when Enter key is pressed
+        function sendMessageOnEnter(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        // Function to clear all chats
+        function clearChats() {
+            const chatBox = document.getElementById('chatBox');
+            chatBox.innerHTML = ''; // Clear chat box content
+        }
+
+        // Function to display messages
+        gun.get('messages').map().on((data, key) => {
+            const { username, message } = data;
+            const chatBox = document.getElementById('chatBox');
+
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            messageElement.innerHTML = `<strong>${username}:</strong> ${message}`;
+            chatBox.appendChild(messageElement);
+        });
+    </script>
+</body>
+</html>
