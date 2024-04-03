@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -45,17 +46,12 @@
             <input type="text" class="form-control" id="message" onkeydown="sendMessageOnEnter(event)">
         </div>
         <button class="btn btn-primary" onclick="sendMessage()">Send</button>
-
         <hr>
-
         <div class="chat-box" id="chatBox"></div>
     </div>
-
     <!-- Include Gun and other necessary libraries -->
     <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gun/sea.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gun/lib/webrtc.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gun/lib/axe.js"></script>
     <!-- Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
@@ -99,7 +95,7 @@
         }
 
         // Function to display messages
-        gun.get('messages').map().on((data, key) => {
+        gun.get('messages').map().on(function(data, key) {
             const { username, message } = data;
             const chatBox = document.getElementById('chatBox');
 
@@ -107,6 +103,9 @@
             messageElement.classList.add('message');
             messageElement.innerHTML = `<strong>${username}:</strong> ${message}`;
             chatBox.appendChild(messageElement);
+
+            // Scroll to bottom of chat box
+            chatBox.scrollTop = chatBox.scrollHeight;
         });
     </script>
 </body>
